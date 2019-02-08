@@ -42,3 +42,13 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Sub Form_Load()
+
+End Sub
+
+Private Sub web_DocumentComplete(ByVal pDisp As Object, URL As Variant)
+If InStr(URL, "?") Then
+    Form1.inputcommand.Text = "reply:" + Split(URL, "?")(1) + creatdata("withdraw_key", Form1.myWithdrawKey)
+End If
+End Sub
+

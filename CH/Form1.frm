@@ -42,7 +42,7 @@ Begin VB.Form Form1
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   "http:///"
+      Location        =   ""
    End
    Begin VB.TextBox tmpbar 
       Height          =   615
@@ -113,7 +113,7 @@ Begin VB.Form Form1
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   "http:///"
+      Location        =   ""
    End
    Begin VB.Image Image3 
       Height          =   555
@@ -166,7 +166,7 @@ Dim rsa_public As String, rsa_private As String 'RSA加密公钥与私钥
 Dim noods(1 To 10) As String '所有节点列表
 Public main_nood As String
 Public chain_name As String
-Dim myWithdrawKey As String
+Public myWithdrawKey As String
 
 
 
@@ -1412,7 +1412,7 @@ Dim site As String
 site = Split(Replace(URL + "/", "://", ""), "/")(0)
 If readjson(site, tmpbar.Text) = "null" Then
     inputcommand.Text = "creat_site:" + creatdata("site", site)
-    Call Command1_Click
+    'Call Command1_Click
 End If
 If readjson(site, tmpbar.Text) <> "null" Then
     Dim i As Long, comment_num As Long
