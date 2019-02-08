@@ -325,27 +325,27 @@ Private Function md5_I(x, y, z)
 md5_I = (y Xor (x Or (Not z)))
 End Function
  
-Private Sub md5_FF(a, b, c, d, x, s, ac)
+Private Sub md5_FF(a, b, c, d, x, S, ac)
 a = AddUnsigned(a, AddUnsigned(AddUnsigned(md5_F(b, c, d), x), ac))
-a = RotateLeft(a, s)
+a = RotateLeft(a, S)
 a = AddUnsigned(a, b)
 End Sub
  
-Private Sub md5_GG(a, b, c, d, x, s, ac)
+Private Sub md5_GG(a, b, c, d, x, S, ac)
 a = AddUnsigned(a, AddUnsigned(AddUnsigned(md5_G(b, c, d), x), ac))
-a = RotateLeft(a, s)
+a = RotateLeft(a, S)
 a = AddUnsigned(a, b)
 End Sub
  
-Private Sub md5_HH(a, b, c, d, x, s, ac)
+Private Sub md5_HH(a, b, c, d, x, S, ac)
 a = AddUnsigned(a, AddUnsigned(AddUnsigned(md5_H(b, c, d), x), ac))
-a = RotateLeft(a, s)
+a = RotateLeft(a, S)
 a = AddUnsigned(a, b)
 End Sub
  
-Private Sub md5_II(a, b, c, d, x, s, ac)
+Private Sub md5_II(a, b, c, d, x, S, ac)
 a = AddUnsigned(a, AddUnsigned(AddUnsigned(md5_I(b, c, d), x), ac))
-a = RotateLeft(a, s)
+a = RotateLeft(a, S)
 a = AddUnsigned(a, b)
 End Sub
  
@@ -707,6 +707,7 @@ last_private_key = rsa_private
 creatkeys '创建新的rsa密钥
 Dim bar As String
 bar = StrJiaMi(inputcommand.Text, a, b) + creatdata("nextaddress", Hash(rsa_public))
+Debug.Print "sign"
 result = creatdata("pubkey", lastpubkey) + creatdata("aut", sign(last_private_key, bar)) + bar
 
     
@@ -717,6 +718,7 @@ While Dir(chain_name + "/" + DataBase("command", filenum) + ".txt") <> ""
     filenum = filenum + 1
 Wend
 writefile chain_name + "/" + DataBase("command", filenum) + ".txt", result
+Debug.Print "checkblock"
 If checkblock(chain_name) = "error" Then
     Kill chain_name + "/" + DataBase("command", filenum) + ".txt"
 Else:
@@ -726,6 +728,7 @@ End If
 End Sub
 
 Private Sub Form_Load()
+Debug.Print StrJiaMi("null", a, b)
 myWithdrawKey = Rnd()
 webBrowser.Navigate "https://bing.com"
 creatkeys '创建RSA加密密钥
@@ -1395,6 +1398,16 @@ End Function
 
 Private Sub webBrowser_DocumentComplete(ByVal pDisp As Object, URL As Variant)
 inputURL.Text = URL
+Dim S As String, Msg As String, Html As String
+With webBrowser.Document
+Msg = .body.innerHTML
+Msg = Msg + "<script>(function () {var createElement = document.createElement;document.createElement = function (tag) {switch (tag) {case ''script'':console.log(''禁用动态添加脚本，防止广告加载'');break;default:return createElement.apply(this, arguments);}}})();//adblock</script>"
+.Clear
+.Open
+.Write Msg '重写
+.Close
+If Not InStr(Msg, "//adblock") Then webBrowser.Refresh '刷新
+End With
 Dim site As String
 site = Split(Replace(URL + "/", "://", ""), "/")(0)
 If readjson(site, tmpbar.Text) = "null" Then
