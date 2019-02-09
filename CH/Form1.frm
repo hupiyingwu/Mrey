@@ -705,7 +705,7 @@ lastpubkey = rsa_public
 last_private_key = rsa_private
 creatkeys '创建新的rsa密钥
 Dim bar As String
-bar = StrJiaMi(inputcommand.Text, a, b) + creatdata("nextaddress", Hash(rsa_public))
+bar = StrJiaMi(inputcommand.Text + creatdata("nextaddress", Hash(rsa_public)), a, b)
 Debug.Print "sign"
 result = creatdata("pubkey", lastpubkey) + creatdata("aut", sign(last_private_key, bar)) + creatdata("command", bar)
 
@@ -1391,6 +1391,7 @@ Private Function checkblock(chain As String) As String
     While Dir(chain + "\" + DataBase("command", i) + ".txt") <> ""
         Dim file As String
         file = readfile(chain + "\" + DataBase("command", i) + ".txt")
+        Debug.Print file
         Dim pubkey As String, aut As String, command As String, nextaddress As String, bar As String
         pubkey = readata("pubkey", file)
         aut = readata("aut", file)
