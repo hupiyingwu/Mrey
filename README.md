@@ -53,10 +53,10 @@ Mrey encourages users to browse original content. The earlier a site is created,
 No professional development team - all versions of Mrey were developed by volunteers in their spare time. The number of developers in Mrey is currently small.
 ## They don't know us
 ### But we know them
-!(https://raw.githubusercontent.com/hupiyingwu/Mrey/master/12.png)
+![www](https://raw.githubusercontent.com/hupiyingwu/Mrey/master/12.png)
 ## Media
 ### They have never heard of us, they will not pay attention to us in the future, we just like their icon.
-!(https://raw.githubusercontent.com/hupiyingwu/Mrey/master/9.png)
+![www](https://raw.githubusercontent.com/hupiyingwu/Mrey/master/9.png)
 ## Roadmaps
 (we completely forget what we've done before. It doesn't matter anyway.)
 ## Documents
