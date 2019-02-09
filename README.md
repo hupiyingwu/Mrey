@@ -8,10 +8,9 @@ Based on blockchain technology, transparent, secure and open source browser
 
 We do not profit for the purpose, we hate fraud as you do, so we will not conduct ICO.
 
-##Introduction
+## Introduction
  Mrey's point-to-point decentralized network supports forking transactions without a central server or primary node. The multi-ledger network that supports bifurcated transactions makes them harder to track; POS consensus mechanism enables Mrey network to effectively defend against quantum computers and 51% attacks. Rigorous cryptographic protocols enable the network to fully secure the property of every user
-## 
-You are not a tool
+## You are not a tool
 
 ### Why would you want to be treated like a tool
 The Mrey browser blocks most web ads, mining scripts, and trackers, and the Mrey browser itself is free and open source. Mrey adopts the GPL V2 protocol to avoid future commercialization.
