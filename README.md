@@ -1,5 +1,6 @@
 # Mrey
-Based on blockchain,decentarlized,secure,open sorce web browser
+## Based on blockchain
+Decentarlized,Secure,Open Sorce Web browser
 # Mrey Browser
 Based on blockchain technology, transparent, secure and open source browser
 
