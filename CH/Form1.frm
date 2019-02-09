@@ -12,6 +12,15 @@ Begin VB.Form Form1
    ScaleHeight     =   11100
    ScaleWidth      =   19140
    StartUpPosition =   3  '窗口缺省
+   Begin VB.CheckBox Check1 
+      BackColor       =   &H00FFFFFF&
+      Caption         =   "关闭广告屏蔽"
+      Height          =   255
+      Left            =   360
+      TabIndex        =   6
+      Top             =   10440
+      Width           =   2055
+   End
    Begin VB.ComboBox inputURL 
       Height          =   300
       Left            =   240
@@ -42,7 +51,7 @@ Begin VB.Form Form1
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   ""
+      Location        =   "http:///"
    End
    Begin VB.TextBox tmpbar 
       Height          =   615
@@ -113,7 +122,7 @@ Begin VB.Form Form1
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   ""
+      Location        =   "http:///"
    End
    Begin VB.Image Image3 
       Height          =   555
@@ -167,6 +176,7 @@ Dim noods(1 To 10) As String '所有节点列表
 Public main_nood As String
 Public chain_name As String
 Public myWithdrawKey As String
+Dim adblock As Boolean
 
 
 
@@ -181,55 +191,36 @@ Private m_l2Power(30)
  Const a As Byte = 20 '密钥
 Const b As Byte = 40 '密钥
 
-Private Function StrJiaMi(ByVal strSource As String, ByVal Key1 As Byte, _
+Private Function StrJiaMi(ByVal strS As String, ByVal Key1 As Byte, _
 ByVal key2 As Integer) As String
-Dim bLowData As Byte
-Dim bHigData As Byte
-Dim i As Integer
-Dim strEncrypt As String
-Dim strChar As String
-For i = 1 To Len(strSource)
-'从待加（解）密字符串中取出一个字符
-strChar = Mid(strSource, i, 1)
-'取字符的低字节和Key1进行异或运算
-bLowData = AscB(MidB(strChar, 1, 1)) Xor Key1
-'取字符的高字节和K2进行异或运算
-bHigData = AscB(MidB(strChar, 2, 1)) Xor key2
-'将运算后的数据合成新的字符
-If Len(Hex(bLowData)) = 1 Then
-strEncrypt = strEncrypt & "0" & Hex(bLowData)
-Else
-strEncrypt = strEncrypt & Hex(bLowData)
-End If
-If Len(Hex(bHigData)) = 1 Then
-strEncrypt = strEncrypt & "0" & Hex(bHigData)
-Else
-strEncrypt = strEncrypt & Hex(bHigData)
-End If
-Next
-StrJiaMi = strEncrypt
+'将字符串转换为16进制
+    Dim abytS() As Byte
+    Dim bytTemp As Byte
+    Dim strTemp As String
+    Dim lLocation As Long
+    abytS = StrConv(strS, vbFromUnicode)
+    For lLocation = 0 To UBound(abytS)
+        bytTemp = abytS(lLocation)
+        strTemp = Hex(bytTemp)
+        strTemp = Right("00" & strTemp, 2)
+        StrJiaMi = StrJiaMi & strTemp
+    Next lLocation
+    StrJiaMi = StrJiaMi
 End Function
 
-Private Function StrJiMi(ByVal strSource As String, ByVal Key1 As Byte, _
+Private Function StrJiMi(ByVal str As String, ByVal Key1 As Byte, _
 ByVal key2 As Integer) As String
-Dim bLowData As Byte
-Dim bHigData As Byte
-Dim i As Integer
-Dim strEncrypt As String
-Dim strChar As String
-For i = 1 To Len(strSource) Step 4
-'从待加（解）密字符串中取出一个字符
-strChar = Mid(strSource, i, 4)
-'取字符的低字节和Key1进行异或运算
-bLowData = "&H" & Mid(strChar, 1, 2)
-bLowData = bLowData Xor Key1
-'取字符的高字节和K2进行异或运算
-bHigData = "&H" & Mid(strChar, 3, 2)
-bHigData = bHigData Xor key2
-'将运算后的数据合成新的字符
-strEncrypt = strEncrypt & ChrB(bLowData) & ChrB(bHigData)
-Next
-StrJiMi = strEncrypt
+'将16进制转换为字符串
+    Dim rst() As Byte
+    Dim i As Long, j As Long, strlong As Long
+    strlong = Len(str)
+    ReDim rst(strlong \ 2)
+    For i = 0 To strlong - 1 Step 2
+        Dim tmp As Long
+        rst(i / 2) = Val("&H" & Mid(str, i + 1, 2))
+    Next
+    StrJiMi = StrConv(rst, vbUnicode)
+
 End Function
 
 Private Function LShift(lValue, iShiftBits)
@@ -699,6 +690,14 @@ hz = True
 
 End Function
 
+Private Sub Check1_Click()
+If adblock = True Then
+    adblock = False
+Else:
+    adblock = True
+End If
+End Sub
+
 Private Sub Command1_Click()
 Dim result As String
 Dim lastpubkey As String, last_private_key As String
@@ -708,7 +707,7 @@ creatkeys '创建新的rsa密钥
 Dim bar As String
 bar = StrJiaMi(inputcommand.Text, a, b) + creatdata("nextaddress", Hash(rsa_public))
 Debug.Print "sign"
-result = creatdata("pubkey", lastpubkey) + creatdata("aut", sign(last_private_key, bar)) + bar
+result = creatdata("pubkey", lastpubkey) + creatdata("aut", sign(last_private_key, bar)) + creatdata("command", bar)
 
     
 If Dir(chain_name, vbDirectory) = "" Then MkDir chain_name
@@ -728,10 +727,12 @@ End If
 End Sub
 
 Private Sub Form_Load()
+adblock = True
 Debug.Print StrJiaMi("null", a, b)
 myWithdrawKey = Rnd()
 webBrowser.Navigate "https://bing.com"
 creatkeys '创建RSA加密密钥
+Debug.Print rsa_public
 Dim i As Long
 For i = 1 To 10
     If Dir(DataBase("nood", i) + ".txt") <> "" Then
@@ -796,8 +797,8 @@ add_nood = False
 Dim i As Integer
 For i = 1 To 10
     If Len(noods(i)) = 0 Then
+        If add_code = False Then noods(i) = rsv.RemoteHostIP + ":" + rsv.RemotePort
         add_nood = True
-        noods(i) = rsv.RemoteHostIP + ":" + rsv.RemotePort
     End If
 Next
 End Sub
@@ -857,6 +858,21 @@ End Sub
 Private Sub rsvCoin_Click()
 inputcommand.Text = "get:" + creatdata("UnockKey", InputBox("收款指令"))
 Call Command1_Click
+End Sub
+
+Private Sub send_ConnectionRequest(ByVal requestID As Long)
+If send.State <> sckClosed Then rsv.Close
+Dim requestID As Long
+send.Accept requestID
+Dim add_nood As Boolean
+add_nood = False
+Dim i As Integer
+For i = 1 To 10
+    If Len(noods(i)) = 0 Then
+        If add_code = False Then noods(i) = rsv.RemoteHostIP + ":" + rsv.RemotePort
+        add_nood = True
+    End If
+Next
 End Sub
 
 Private Sub send_DataArrival(ByVal bytesTotal As Long)
@@ -938,6 +954,7 @@ For i = 1 To 10
         For j = 1 To filenum
             Dim bar As String
             bar = StrJiaMi(readfile(chain_name + "/" + DataBase("command", filenum) + ".txt"), a, b)
+            On Error Resume Next
             send.SendData "sendblock:" + creatdata("bar", bar) + creatdata("chain", chain_name) + creatdata("num", j) + creatdata("total", filenum)
         Next
     End If
@@ -983,7 +1000,7 @@ End Function
 Private Function checksign(pubkey As String, aut As String, code As String) As Boolean
 Dim h As String, mychar() As String
 h = Hash(code)
-ReDim muchar(Len(h) - 1) As String
+ReDim mychar(Len(h) - 1) As String
 Dim i As Long
 For i = 1 To Len(h)
     Dim num As Integer
@@ -1380,6 +1397,7 @@ Private Function checkblock(chain As String) As String
         command = StrJiMi(readata("command", file), a, b)
         nextaddress = readata("nextaddress", file)
         bar = command + nextaddress
+        Debug.Print pubkey
         If checksign(pubkey, aut, bar) = False Then
             checkblock = "error"
             Debug.Print "sign error"
@@ -1399,6 +1417,7 @@ End Function
 Private Sub webBrowser_DocumentComplete(ByVal pDisp As Object, URL As Variant)
 inputURL.Text = URL
 Dim S As String, Msg As String, Html As String
+If adblock = False Then GoTo blocking
 With webBrowser.Document
 Msg = .body.innerHTML
 Msg = Msg + "<script>(function () {var createElement = document.createElement;document.createElement = function (tag) {switch (tag) {case ''script'':console.log(''禁用动态添加脚本，防止广告加载'');break;default:return createElement.apply(this, arguments);}}})();//adblock</script>"
@@ -1406,8 +1425,9 @@ Msg = Msg + "<script>(function () {var createElement = document.createElement;do
 .Open
 .Write Msg '重写
 .Close
-If Not InStr(Msg, "//adblock") Then webBrowser.Refresh '刷新
+If Not InStr(Msg, "//adblock") Then webBrowser.Refresh  '刷新
 End With
+blocking:
 Dim site As String
 site = Split(Replace(URL + "/", "://", ""), "/")(0)
 If readjson(site, tmpbar.Text) = "null" Then
