@@ -1,16 +1,14 @@
 # Mrey
-Based on blockchain,decentarlized,secure,open sorce web browser
-# Mrey Browser
-Based on blockchain technology, transparent, secure and open source browser
+## Based on blockchain
+Decentarlized,Secure,Open Sorce Web browser
 
 ## ICO
 
 We do not profit for the purpose, we hate fraud as you do, so we will not conduct ICO.
 
-##Introduction
+## Introduction
  Mrey's point-to-point decentralized network supports forking transactions without a central server or primary node. The multi-ledger network that supports bifurcated transactions makes them harder to track; POS consensus mechanism enables Mrey network to effectively defend against quantum computers and 51% attacks. Rigorous cryptographic protocols enable the network to fully secure the property of every user
-## 
-You are not a tool
+## You are not a tool
 
 ### Why would you want to be treated like a tool
 The Mrey browser blocks most web ads, mining scripts, and trackers, and the Mrey browser itself is free and open source. Mrey adopts the GPL V2 protocol to avoid future commercialization.
@@ -52,10 +50,10 @@ Mrey encourages users to browse original content. The earlier a site is created,
 No professional development team - all versions of Mrey were developed by volunteers in their spare time. The number of developers in Mrey is currently small.
 ## They don't know us
 ### But we know them
-!(https://raw.githubusercontent.com/hupiyingwu/Mrey/master/12.png)
+![www](https://raw.githubusercontent.com/hupiyingwu/Mrey/master/12.png)
 ## Media
 ### They have never heard of us, they will not pay attention to us in the future, we just like their icon.
-!(https://raw.githubusercontent.com/hupiyingwu/Mrey/master/9.png)
+![www](https://raw.githubusercontent.com/hupiyingwu/Mrey/master/9.png)
 ## Roadmaps
 (we completely forget what we've done before. It doesn't matter anyway.)
 ## Documents
