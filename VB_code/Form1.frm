@@ -6,11 +6,19 @@ Begin VB.Form Form1
    ClientHeight    =   8025
    ClientLeft      =   120
    ClientTop       =   450
-   ClientWidth     =   10110
+   ClientWidth     =   11910
    LinkTopic       =   "Form1"
    ScaleHeight     =   8025
-   ScaleWidth      =   10110
+   ScaleWidth      =   11910
    StartUpPosition =   3  '¥∞ø⁄»± °
+   Begin VB.CommandButton Command2 
+      Caption         =   "Create"
+      Height          =   495
+      Left            =   10080
+      TabIndex        =   3
+      Top             =   480
+      Width           =   1215
+   End
    Begin VB.CommandButton Command1 
       Caption         =   "Open"
       Height          =   375
@@ -486,6 +494,14 @@ End If
         
 End Sub
 
+Private Sub Command2_Click()
+Dim file As String
+file = InputBox("file path")
+Dim code As String
+code = readfile(file)
+writefile Hash(Split(code, "<!-- Mrey Mining Module -->")(0)), code
+End Sub
+
 Private Sub Form_Load()
 math = "null"
 creatkeys
@@ -502,7 +518,15 @@ Private Sub wb_DocumentComplete(ByVal pDisp As Object, URL As Variant)
     ElseIf InStr(URL, "#") Then
         math = URL
     End If
-
+    If InStr(math, "#API:") Then
+        Dim commands As String, new_command
+        Dim code As String
+        code = readfile(URL + "")
+        commands = bstr(code, "<!-- Mrey Mining Module --><script>", "</script>")
+        new_command = commands + readata("function", math) + "(" + rsa_public + readata("command", math) + ");"
+        code = Replace(code, "<!-- Mrey Mining Module --><script>" + commands + "</script>", "<!-- Mrey Mining Module --><script>" + new_command + "</script>")
+        writefile URL + "", code
+    End If
 End Sub
 Private Function DataBase(BaseName As String, blocknum As Long) As String
 DataBase = BaseName + "(" & blocknum & ")"
@@ -557,8 +581,8 @@ publickey = 10
 While publickey * privatekey Mod m <> 1
     publickey = publickey + 1
 Wend
-rsa_private = "P" & n & "K" & privatekey & "X"
-rsa_public = "P" & n & "K" & publickey & "X"
+rsa_private = n & "," & privatekey & ","
+rsa_public = n & "," & publickey & ","
 End Sub
 Private Function rsajia(p As String, key As String, x As String) As String 'RSAº”√‹
 
