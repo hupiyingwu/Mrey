@@ -40,6 +40,7 @@ Begin VB.Form Form1
       _ExtentX        =   741
       _ExtentY        =   741
       _Version        =   393216
+      LocalPort       =   20
    End
    Begin VB.Timer Timer1 
       Left            =   9480
@@ -454,6 +455,8 @@ Dim noods As String
 noods = readfile("noods.txt")
 Dim num As Long
 num = countString(noods, ";")
+Dim filehash As String
+filehash = readata("filehash", inputURL.Text)
 If num > 0 Then
     Dim i As Long
     For i = 1 To num
@@ -466,8 +469,8 @@ If num > 0 Then
         winsock.Connect
         timer = False
         Timer1.Enabled = True
-        Dim filehash As String
-        filehash = readata("filehash", inputURL.Text)
+
+
         While timer = False
             DoEvents
         Wend
@@ -476,7 +479,7 @@ If num > 0 Then
             wb.Navigate2 readata("server", inputURL.Text)
             Dim xmlHTTP1
             Set xmlHTTP1 = CreateObject("Microsoft.XMLHTTP")
-            xmlHTTP1.Open "get", "http://www.qq.com", True
+            xmlHTTP1.Open "get", readata("server", inputURL.Text), True
             xmlHTTP1.send
             While xmlHTTP1.ReadyState <> 4
                 DoEvents
@@ -485,8 +488,10 @@ If num > 0 Then
             Set xmlHTTP1 = Nothing
         End If
     Next
+ElseIf Dir(filehash + ".html") <> "" Then
+    wb.Navigate App.Path + "/" + filehash + ".html"
 Else:
-    MsgBox "No peer"
+    MsgBox "No peer and file no found"
 End If
 
 
@@ -499,18 +504,25 @@ Dim file As String
 file = InputBox("file path")
 Dim code As String
 code = readfile(file)
-writefile Hash(Split(code, "<!-- Mrey Mining Module -->")(0)), code
+writefile Hash(Split(code, "<!-- Mrey Mining Module -->")(0)) + ".html", code
 End Sub
 
 Private Sub Form_Load()
+Debug.Print Dir("e0f41ed955298054.html")
 math = "null"
 creatkeys
 End Sub
 Private Function countString(base As String, findString As String) As Long
 countString = Len(base) - Len(Replace(base, findString, ""))
 End Function
-Private Sub wb_DocumentComplete(ByVal pDisp As Object, URL As Variant)
 
+Private Sub Form_Unload(Cancel As Integer)
+winsock.Close
+
+End Sub
+
+Private Sub wb_DocumentComplete(ByVal pDisp As Object, URL As Variant)
+'inputURL.Text = URL
     If InStr(URL, "a=") Then
         math = Split(URL, "a=")(1)
     ElseIf InStr(URL, "#error") Then
@@ -731,7 +743,6 @@ ElseIf InStr(data, "reply-") Then
         filehash = Split(filename, ".html")
         txt = Replace(HexToStr(txt), vbCrLf, "")
         If Hash(Split(txt, "<!-- Mrey Mining Module -->")(0)) = filehash Then
-            txt = "<script>var check=""error"";</script>" + txt + "<script>window.location.href=""#check:""+check;</script>"
             writefile "Temp_" + filename, txt
             math = "null"
             wb.Navigate App.Path + "/Temp_" + filename

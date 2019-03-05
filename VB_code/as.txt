@@ -1,0 +1,7 @@
+<html>
+<body>
+asd</body>
+</html>
+<!-- Mrey Mining Module -->
+<script>
+</script>
